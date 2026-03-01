@@ -1,0 +1,321 @@
+{
+  "version": "1.0",
+  "schema": {
+    "keywords": "list[str]",
+    "pattern_rules": "list[{feature, direction, reason}]",
+    "likely_causes": "list[{cause, why}]",
+    "confirmatory_tests": "list[{test, priority(1-3), reason}]",
+    "suggested_specialty": "{name, reason}",
+    "red_flags": "list[str]"
+  },
+
+  "cbc_related": {
+    "healthy": {
+      "keywords": ["healthy", "normal", "within normal limits"],
+      "pattern_rules": [
+        {"feature": "cbc_overall", "direction": "normal", "reason": "CBC parameters are within typical reference ranges."}
+      ],
+      "likely_causes": [
+        {"cause": "No clear CBC abnormality", "why": "CBC alone may not capture many conditions; symptoms drive next steps."}
+      ],
+      "confirmatory_tests": [
+        {"test": "No additional tests (CBC-based)", "priority": 3, "reason": "If symptoms exist, targeted tests depend on complaints/history."}
+      ],
+      "suggested_specialty": {"name": "Primary care / Internal Medicine", "reason": "Clinical assessment if symptoms persist."},
+      "red_flags": ["severe shortness of breath", "chest pain", "fainting", "high fever"]
+    },
+
+    "iron_deficiency_anemia": {
+      "keywords": ["iron deficiency anemia", "ida", "iron def anemia"],
+      "pattern_rules": [
+        {"feature": "hgb", "direction": "low", "reason": "Low hemoglobin suggests anemia."},
+        {"feature": "rdw", "direction": "high", "reason": "RDW often increases with iron deficiency."},
+        {"feature": "mcv", "direction": "low_or_normal", "reason": "May be microcytic or normal early on."}
+      ],
+      "likely_causes": [
+        {"cause": "Dietary iron deficiency", "why": "Low intake or increased requirements."},
+        {"cause": "Blood loss (GI/menstrual)", "why": "Common cause of iron depletion."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Serum Ferritin", "priority": 1, "reason": "Best indicator of iron stores."},
+        {"test": "Serum Iron", "priority": 2, "reason": "Measures circulating iron."},
+        {"test": "TIBC / Transferrin Saturation", "priority": 2, "reason": "Evaluates iron binding capacity and availability."},
+        {"test": "Peripheral Blood Smear", "priority": 3, "reason": "RBC morphology supportive (microcytosis/hypochromia)."},
+        {"test": "Stool occult blood (if bleeding suspected)", "priority": 3, "reason": "Screens for GI blood loss."}
+      ],
+      "suggested_specialty": {"name": "Internal Medicine ± Gastroenterology", "reason": "Investigate source of iron loss if suspected."},
+      "red_flags": ["very low hemoglobin", "black stools or blood in stool", "rapid worsening fatigue", "chest pain"]
+    },
+
+    "microcytic_anemia": {
+      "keywords": ["microcytic anemia", "microcytosis"],
+      "pattern_rules": [
+        {"feature": "mcv", "direction": "low", "reason": "Microcytosis (small RBC size)."},
+        {"feature": "hgb", "direction": "low", "reason": "Anemia severity indicator."}
+      ],
+      "likely_causes": [
+        {"cause": "Iron deficiency anemia", "why": "Most common cause of microcytosis."},
+        {"cause": "Thalassemia trait", "why": "Microcytosis sometimes with relatively preserved RBC count."},
+        {"cause": "Anemia of chronic disease", "why": "Can be microcytic in some cases."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Serum Ferritin", "priority": 1, "reason": "Differentiates iron deficiency from other causes."},
+        {"test": "Iron Studies (Serum Iron + TIBC/TSAT)", "priority": 2, "reason": "Confirms iron metabolism pattern."},
+        {"test": "Hb Electrophoresis", "priority": 2, "reason": "Rules out thalassemia trait."},
+        {"test": "Peripheral Blood Smear", "priority": 3, "reason": "RBC morphology evaluation."}
+      ],
+      "suggested_specialty": {"name": "Internal Medicine / Hematology", "reason": "Microcytic anemia workup and cause identification."},
+      "red_flags": ["fainting", "severe weakness", "very low hemoglobin", "palpitations at rest"]
+    },
+
+    "normocytic_anemia": {
+      "keywords": ["normocytic anemia", "normocytosis"],
+      "pattern_rules": [
+        {"feature": "hgb", "direction": "low", "reason": "Anemia present."},
+        {"feature": "mcv", "direction": "normal", "reason": "Normocytic pattern."}
+      ],
+      "likely_causes": [
+        {"cause": "Chronic kidney disease", "why": "Reduced erythropoietin production."},
+        {"cause": "Chronic inflammation", "why": "Anemia of chronic disease."},
+        {"cause": "Acute blood loss", "why": "Early phase may appear normocytic."},
+        {"cause": "Hemolysis", "why": "Increased RBC destruction."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Reticulocyte Count", "priority": 1, "reason": "Distinguishes production vs destruction/loss."},
+        {"test": "Creatinine + eGFR", "priority": 2, "reason": "Assesses kidney-related anemia."},
+        {"test": "CRP / ESR", "priority": 2, "reason": "Checks chronic inflammation."},
+        {"test": "Ferritin + Iron Studies", "priority": 3, "reason": "Rules out iron deficiency."},
+        {"test": "Hemolysis labs (LDH, bilirubin, haptoglobin)", "priority": 3, "reason": "If hemolysis suspected clinically."}
+      ],
+      "suggested_specialty": {"name": "Internal Medicine / Hematology", "reason": "Broader workup for underlying cause."},
+      "red_flags": ["rapid Hb drop", "shortness of breath at rest", "chest pain", "syncope"]
+    },
+
+    "anemia_other": {
+      "keywords": ["anemia", "macrocytic anemia", "b12 deficiency", "folate deficiency"],
+      "pattern_rules": [
+        {"feature": "hgb", "direction": "low", "reason": "Anemia present."},
+        {"feature": "mcv", "direction": "high_or_mixed", "reason": "May suggest macrocytosis or mixed anemia (varies by data)."}
+      ],
+      "likely_causes": [
+        {"cause": "Vitamin B12 deficiency", "why": "Common macrocytic cause."},
+        {"cause": "Folate deficiency", "why": "Another common macrocytic cause."},
+        {"cause": "Mixed anemia", "why": "Iron deficiency plus B12/folate can mask MCV changes."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Vitamin B12 Level", "priority": 1, "reason": "Detects B12 deficiency."},
+        {"test": "Folate Level", "priority": 1, "reason": "Detects folate deficiency."},
+        {"test": "Reticulocyte Count", "priority": 2, "reason": "Marrow response assessment."},
+        {"test": "Peripheral Blood Smear", "priority": 3, "reason": "Morphology suggests macro-ovalocytes/hypersegmented neutrophils."}
+      ],
+      "suggested_specialty": {"name": "Internal Medicine / Hematology", "reason": "Clarify subtype and treat underlying cause."},
+      "red_flags": ["neurologic symptoms (numbness/tingling)", "very low hemoglobin", "confusion"]
+    },
+
+    "infection": {
+      "keywords": ["infection", "pneumonia", "sepsis", "uti", "urinary", "cellulitis", "abscess"],
+      "pattern_rules": [
+        {"feature": "wbc", "direction": "high_or_low", "reason": "WBC may rise or fall in infection."},
+        {"feature": "neutrophils", "direction": "high", "reason": "Neutrophilia can suggest bacterial infection."},
+        {"feature": "lymphocytes", "direction": "high", "reason": "Lymphocytosis can suggest viral infection."}
+      ],
+      "likely_causes": [
+        {"cause": "Bacterial infection", "why": "Often neutrophilia + high CRP/PCT."},
+        {"cause": "Viral infection", "why": "May have lymphocytosis and lower PCT."}
+      ],
+      "confirmatory_tests": [
+        {"test": "CRP", "priority": 1, "reason": "Sensitive inflammation marker."},
+        {"test": "Procalcitonin", "priority": 1, "reason": "Helps support bacterial infection."},
+        {"test": "ESR", "priority": 2, "reason": "Non-specific inflammation marker."},
+        {"test": "Urinalysis ± Urine Culture", "priority": 2, "reason": "If urinary symptoms suggest UTI."},
+        {"test": "Blood Culture", "priority": 1, "reason": "If fever or sepsis is suspected."}
+      ],
+      "suggested_specialty": {"name": "Internal Medicine / ER (if severe)", "reason": "Evaluate infection source and severity."},
+      "red_flags": ["high fever", "confusion", "low blood pressure", "difficulty breathing", "persistent vomiting"]
+    },
+
+    "thrombocytopenia": {
+      "keywords": ["thrombocytopenia", "low platelets"],
+      "pattern_rules": [
+        {"feature": "platelets", "direction": "low", "reason": "Low platelet count defines thrombocytopenia."}
+      ],
+      "likely_causes": [
+        {"cause": "ITP (immune)", "why": "Platelet destruction without other cytopenias."},
+        {"cause": "Drug-induced thrombocytopenia", "why": "Some medications reduce platelets."},
+        {"cause": "Viral infection", "why": "Can lower platelet count."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Repeat CBC", "priority": 1, "reason": "Confirms true thrombocytopenia and rules out lab error."},
+        {"test": "Peripheral Blood Smear", "priority": 1, "reason": "Excludes platelet clumping and evaluates abnormal cells."},
+        {"test": "PT/INR + aPTT", "priority": 2, "reason": "Assesses coagulation disorders."},
+        {"test": "Liver Function Tests", "priority": 2, "reason": "Liver disease can cause low platelets."}
+      ],
+      "suggested_specialty": {"name": "Hematology", "reason": "Platelet disorder evaluation and treatment."},
+      "red_flags": ["active bleeding", "blood in urine/stool", "large bruises or petechiae", "very low platelets"]
+    },
+
+    "leukemia_risk": {
+      "keywords": ["leukemia", "blast", "hematologic malignancy"],
+      "pattern_rules": [
+        {"feature": "wbc", "direction": "very_high_or_very_low", "reason": "Extreme WBC values can be concerning."},
+        {"feature": "differential", "direction": "abnormal", "reason": "Abnormal differentials can appear."}
+      ],
+      "likely_causes": [
+        {"cause": "Hematologic malignancy (risk flag)", "why": "CBC alone is not diagnostic; needs urgent confirmation."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Peripheral Blood Smear (Urgent)", "priority": 1, "reason": "Detects blasts/abnormal cells."},
+        {"test": "Flow Cytometry", "priority": 1, "reason": "Characterizes abnormal cell populations."},
+        {"test": "LDH + Uric acid", "priority": 2, "reason": "High turnover markers supportive."},
+        {"test": "Bone Marrow Biopsy", "priority": 3, "reason": "Definitive diagnosis if indicated."}
+      ],
+      "suggested_specialty": {"name": "Hematology (Urgent)", "reason": "Urgent malignancy workup."},
+      "red_flags": ["unexplained weight loss", "night sweats", "persistent fever", "easy bruising/bleeding", "bone pain"]
+    }
+  },
+
+  "non_cbc_related": {
+    "diabetes": {
+      "keywords": ["diabetes", "dm", "hyperglycemia", "high sugar"],
+      "pattern_rules": [
+        {"feature": "cbc_scope", "direction": "insufficient", "reason": "CBC does not diagnose diabetes; glucose metrics are required."}
+      ],
+      "likely_causes": [
+        {"cause": "Diabetes mellitus", "why": "Requires glucose-based diagnostic tests."},
+        {"cause": "Prediabetes", "why": "Borderline glucose/HbA1c results."}
+      ],
+      "confirmatory_tests": [
+        {"test": "HbA1c", "priority": 1, "reason": "Core diagnostic and monitoring test."},
+        {"test": "Fasting Plasma Glucose", "priority": 1, "reason": "Core diagnostic test."},
+        {"test": "OGTT (Oral Glucose Tolerance Test)", "priority": 2, "reason": "If diagnosis is uncertain."},
+        {"test": "Urine ketones (if symptomatic)", "priority": 2, "reason": "Evaluates ketosis if symptoms suggest severe hyperglycemia."}
+      ],
+      "suggested_specialty": {"name": "Endocrinology / Internal Medicine", "reason": "Diabetes evaluation and management."},
+      "red_flags": ["confusion", "vomiting", "deep rapid breathing", "severe dehydration"]
+    },
+
+    "hypertension": {
+      "keywords": ["hypertension", "htn", "high blood pressure"],
+      "pattern_rules": [
+        {"feature": "cbc_scope", "direction": "insufficient", "reason": "Hypertension requires blood pressure measurements."}
+      ],
+      "likely_causes": [
+        {"cause": "Primary hypertension", "why": "Most common form; diagnosis via repeated BP readings."},
+        {"cause": "Secondary hypertension", "why": "Consider kidney/endocrine causes if resistant or young onset."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Repeated BP measurements (home/clinic average)", "priority": 1, "reason": "Diagnosis requires multiple readings over time."},
+        {"test": "Creatinine + eGFR", "priority": 2, "reason": "Kidney involvement/secondary causes."},
+        {"test": "Urine albumin/creatinine ratio", "priority": 2, "reason": "Detects kidney damage."},
+        {"test": "Lipid profile", "priority": 3, "reason": "Cardiovascular risk assessment."}
+      ],
+      "suggested_specialty": {"name": "Cardiology / Internal Medicine", "reason": "Hypertension diagnosis and treatment."},
+      "red_flags": ["severe headache", "chest pain", "shortness of breath", "very high BP readings"]
+    },
+
+    "cardiac_arrhythmia_or_af": {
+      "keywords": ["atrial fibrillation", "afib", "arrhythmia", "palpitations"],
+      "pattern_rules": [
+        {"feature": "cbc_scope", "direction": "insufficient", "reason": "Arrhythmias require ECG-based assessment."}
+      ],
+      "likely_causes": [
+        {"cause": "Atrial fibrillation", "why": "ECG confirms rhythm disturbance."},
+        {"cause": "Other arrhythmias", "why": "Holter monitoring may be needed."}
+      ],
+      "confirmatory_tests": [
+        {"test": "ECG", "priority": 1, "reason": "Primary diagnostic test for rhythm."},
+        {"test": "Holter monitor (24-48h) or event monitor", "priority": 2, "reason": "Captures intermittent arrhythmias."},
+        {"test": "TSH", "priority": 2, "reason": "Thyroid disease can trigger arrhythmias."}
+      ],
+      "suggested_specialty": {"name": "Cardiology", "reason": "Rhythm evaluation and management."},
+      "red_flags": ["syncope/fainting", "chest pain", "severe shortness of breath"]
+    },
+
+    "heart_failure_or_chf": {
+      "keywords": ["chf", "heart failure", "cardiac failure"],
+      "pattern_rules": [
+        {"feature": "cbc_scope", "direction": "insufficient", "reason": "Heart failure needs imaging and cardiac biomarkers."}
+      ],
+      "likely_causes": [
+        {"cause": "Heart failure", "why": "ECHO + BNP support diagnosis and severity."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Echocardiography", "priority": 1, "reason": "Assesses heart function (EF, structure)."},
+        {"test": "BNP / NT-proBNP", "priority": 1, "reason": "Supports heart failure diagnosis."},
+        {"test": "ECG", "priority": 2, "reason": "Identifies ischemia or rhythm issues."},
+        {"test": "Chest X-ray", "priority": 3, "reason": "Checks congestion and heart size."}
+      ],
+      "suggested_specialty": {"name": "Cardiology", "reason": "Heart failure workup and treatment."},
+      "red_flags": ["severe shortness of breath", "leg swelling with breathing difficulty", "chest pain", "confusion"]
+    },
+
+    "chronic_kidney_disease": {
+      "keywords": ["ckd", "kidney disease", "renal", "nephropathy"],
+      "pattern_rules": [
+        {"feature": "cbc_scope", "direction": "support_only", "reason": "CBC may show anemia in CKD but does not diagnose CKD."}
+      ],
+      "likely_causes": [
+        {"cause": "Chronic kidney disease", "why": "Requires kidney function and urine studies."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Creatinine + eGFR", "priority": 1, "reason": "Core kidney function assessment."},
+        {"test": "Urinalysis", "priority": 1, "reason": "Protein/blood in urine screening."},
+        {"test": "Urine albumin/creatinine ratio", "priority": 2, "reason": "Quantifies albumin leak."},
+        {"test": "Electrolytes (K, Na, HCO3)", "priority": 2, "reason": "Detects kidney-related imbalances."}
+      ],
+      "suggested_specialty": {"name": "Nephrology / Internal Medicine", "reason": "Kidney evaluation and staging."},
+      "red_flags": ["very low urine output", "severe swelling", "severe weakness", "confusion"]
+    },
+
+    "liver_disease": {
+      "keywords": ["cirrhosis", "liver disease", "hepatic", "hepatitis"],
+      "pattern_rules": [
+        {"feature": "cbc_scope", "direction": "support_only", "reason": "CBC may show low platelets but LFTs/imaging are needed."}
+      ],
+      "likely_causes": [
+        {"cause": "Chronic liver disease", "why": "Requires liver function tests and imaging."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Liver function tests (ALT, AST, ALP, bilirubin, albumin)", "priority": 1, "reason": "Core assessment of liver injury and function."},
+        {"test": "PT/INR", "priority": 2, "reason": "Reflects liver synthetic function."},
+        {"test": "Hepatitis B/C serology", "priority": 2, "reason": "Common etiologies."},
+        {"test": "Abdominal ultrasound", "priority": 3, "reason": "Assesses liver structure and portal hypertension signs."}
+      ],
+      "suggested_specialty": {"name": "Hepatology / Gastroenterology", "reason": "Liver workup and management."},
+      "red_flags": ["confusion (encephalopathy)", "vomiting blood", "black stools", "severe jaundice"]
+    },
+
+    "thyroid_disorder": {
+      "keywords": ["hypothyroid", "hyperthyroid", "thyroid", "tsh"],
+      "pattern_rules": [
+        {"feature": "cbc_scope", "direction": "support_only", "reason": "CBC may show anemia but thyroid tests confirm diagnosis."}
+      ],
+      "likely_causes": [
+        {"cause": "Hypothyroidism", "why": "Often diagnosed by TSH/Free T4."},
+        {"cause": "Hyperthyroidism", "why": "Diagnosed by TSH/Free T4 and clinical context."}
+      ],
+      "confirmatory_tests": [
+        {"test": "TSH", "priority": 1, "reason": "Primary screening test."},
+        {"test": "Free T4", "priority": 1, "reason": "Confirms thyroid hormone status."},
+        {"test": "Thyroid antibodies (if autoimmune suspected)", "priority": 2, "reason": "Supports autoimmune etiology."}
+      ],
+      "suggested_specialty": {"name": "Endocrinology / Internal Medicine", "reason": "Thyroid evaluation and treatment."},
+      "red_flags": ["severe palpitations", "chest pain", "confusion", "extreme weakness"]
+    },
+
+    "general_non_cbc_related": {
+      "keywords": [],
+      "pattern_rules": [
+        {"feature": "cbc_scope", "direction": "insufficient", "reason": "CBC alone is not enough; use symptoms/history to guide testing."}
+      ],
+      "likely_causes": [
+        {"cause": "Non-CBC condition", "why": "Needs targeted evaluation beyond CBC."}
+      ],
+      "confirmatory_tests": [
+        {"test": "Clinical evaluation (history + physical exam)", "priority": 1, "reason": "Guides which tests are appropriate."}
+      ],
+      "suggested_specialty": {"name": "Internal Medicine", "reason": "General assessment to guide next tests."},
+      "red_flags": ["severe chest pain", "severe shortness of breath", "fainting", "confusion", "uncontrolled bleeding"]
+    }
+  }
+}

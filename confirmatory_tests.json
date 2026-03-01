@@ -1,0 +1,173 @@
+{
+  "healthy": [
+    {
+      "test": "No additional tests",
+      "priority": 3,
+      "reason": "CBC parameters are within normal range. Further testing depends on symptoms."
+    }
+  ],
+  "iron_deficiency_anemia": [
+    {
+      "test": "Serum Ferritin",
+      "priority": 1,
+      "reason": "Best indicator of body iron stores."
+    },
+    {
+      "test": "Serum Iron",
+      "priority": 2,
+      "reason": "Measures circulating iron level."
+    },
+    {
+      "test": "TIBC / Transferrin Saturation",
+      "priority": 2,
+      "reason": "Assesses iron binding capacity."
+    },
+    {
+      "test": "Peripheral Blood Smear",
+      "priority": 3,
+      "reason": "Evaluates red blood cell morphology."
+    }
+  ],
+  "microcytic_anemia": [
+    {
+      "test": "Serum Ferritin",
+      "priority": 1,
+      "reason": "Differentiates iron deficiency from other causes."
+    },
+    {
+      "test": "Iron Studies (Serum Iron + TIBC)",
+      "priority": 2,
+      "reason": "Confirms iron metabolism status."
+    },
+    {
+      "test": "Hb Electrophoresis",
+      "priority": 2,
+      "reason": "Rules out thalassemia trait."
+    },
+    {
+      "test": "Peripheral Blood Smear",
+      "priority": 3,
+      "reason": "Assesses RBC size and shape."
+    }
+  ],
+  "normocytic_anemia": [
+    {
+      "test": "Reticulocyte Count",
+      "priority": 1,
+      "reason": "Determines bone marrow response."
+    },
+    {
+      "test": "Ferritin + Iron Studies",
+      "priority": 2,
+      "reason": "Rules out iron deficiency."
+    },
+    {
+      "test": "Kidney Function Tests (Creatinine, eGFR)",
+      "priority": 2,
+      "reason": "Chronic kidney disease is a common cause."
+    },
+    {
+      "test": "CRP / ESR",
+      "priority": 2,
+      "reason": "Detects chronic inflammation."
+    },
+    {
+      "test": "Peripheral Blood Smear",
+      "priority": 3,
+      "reason": "Morphologic assessment of blood cells."
+    }
+  ],
+  "anemia_other": [
+    {
+      "test": "Vitamin B12 Level",
+      "priority": 1,
+      "reason": "Detects B12 deficiency."
+    },
+    {
+      "test": "Folate Level",
+      "priority": 1,
+      "reason": "Detects folate deficiency."
+    },
+    {
+      "test": "Reticulocyte Count",
+      "priority": 2,
+      "reason": "Evaluates marrow activity."
+    },
+    {
+      "test": "Peripheral Blood Smear",
+      "priority": 3,
+      "reason": "Further morphological evaluation."
+    }
+  ],
+  "infection": [
+    {
+      "test": "CRP",
+      "priority": 1,
+      "reason": "Sensitive marker of inflammation."
+    },
+    {
+      "test": "Procalcitonin",
+      "priority": 1,
+      "reason": "Helps differentiate bacterial from viral infection."
+    },
+    {
+      "test": "ESR",
+      "priority": 2,
+      "reason": "Non-specific inflammatory marker."
+    },
+    {
+      "test": "Urinalysis \u00b1 Urine Culture",
+      "priority": 2,
+      "reason": "If urinary tract infection is suspected."
+    },
+    {
+      "test": "Blood Culture",
+      "priority": 1,
+      "reason": "If fever or sepsis is suspected."
+    }
+  ],
+  "thrombocytopenia": [
+    {
+      "test": "Repeat CBC",
+      "priority": 1,
+      "reason": "Confirms true thrombocytopenia."
+    },
+    {
+      "test": "Peripheral Blood Smear",
+      "priority": 1,
+      "reason": "Rules out platelet clumping or abnormal cells."
+    },
+    {
+      "test": "PT / INR and aPTT",
+      "priority": 2,
+      "reason": "Evaluates coagulation abnormalities."
+    },
+    {
+      "test": "Liver Function Tests",
+      "priority": 2,
+      "reason": "Liver disease may cause low platelets."
+    }
+  ],
+  "leukemia_risk": [
+    {
+      "test": "Peripheral Blood Smear (Urgent)",
+      "priority": 1,
+      "reason": "Detects abnormal or blast cells."
+    },
+    {
+      "test": "Flow Cytometry",
+      "priority": 1,
+      "reason": "Immunophenotyping of abnormal cells."
+    },
+    {
+      "test": "LDH",
+      "priority": 2,
+      "reason": "Marker of high cell turnover."
+    },
+    {
+      "test": "Bone Marrow Biopsy",
+      "priority": 3,
+      "reason": "Definitive diagnosis if malignancy suspected."
+    }
+  ]
+}

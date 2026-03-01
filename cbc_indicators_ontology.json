@@ -1,0 +1,271 @@
+{
+  "version": "1.0",
+  "name": "cbc_indicators_ontology",
+  "purpose": "Post-model medical indicators layer for CBC: sanity check, explainability, urgency flags, and test suggestions.",
+  "notes": [
+    "This is clinical decision support only; not a diagnosis.",
+    "Prefer using lab-provided flags (LOW/NORMAL/HIGH) because reference ranges vary by lab, age, and sex.",
+    "If numeric thresholds are used, treat them as configurable placeholders and validate against your local lab ranges."
+  ],
+
+  "schema": {
+    "inputs": {
+      "cbc_values": "object{numeric}",
+      "cbc_flags": "object{LOW|NORMAL|HIGH|UNKNOWN}",
+      "optional_context": "object{age, sex}"
+    },
+    "outputs": {
+      "derived_indicators": "object",
+      "pattern_support": "list[{condition, support_level, support_score, supporting_indicators, contradictions}]",
+      "urgent_attention": "object{flag, reasons, suggested_action}",
+      "recommended_tests": "list[{test, priority(1-3), reason}]"
+    }
+  },
+
+  "feature_aliases": {
+    "hemoglobin": ["hgb", "hb", "hemoglobin"],
+    "hematocrit": ["hct", "hematocrit"],
+    "wbc": ["wbc", "white_blood_cells"],
+    "rbc": ["rbc", "red_blood_cells"],
+    "mcv": ["mcv"],
+    "mch": ["mch"],
+    "mchc": ["mchc"],
+    "rdw": ["rdw", "rdw_cv"],
+    "platelets": ["plt", "platelets"],
+    "neutrophils_percent": ["neut%", "neutrophils_percent", "neutrophils"],
+    "lymphocytes_percent": ["lymph%", "lymphocytes_percent", "lymphocytes"],
+    "monocytes_percent": ["mono%", "monocytes_percent", "monocytes"],
+    "eosinophils_percent": ["eos%", "eosinophils_percent", "eosinophils"],
+    "basophils_percent": ["baso%", "basophils_percent", "basophils"]
+  },
+
+  "derived_indicators": {
+    "anemia_present": {
+      "logic": [
+        { "if_flag": { "hemoglobin": "LOW" }, "then": true },
+        { "else": false }
+      ],
+      "reason": "Low hemoglobin suggests anemia."
+    },
+
+    "microcytosis": {
+      "logic": [
+        { "if_flag": { "mcv": "LOW" }, "then": true },
+        { "else": false }
+      ],
+      "reason": "Low MCV suggests microcytosis."
+    },
+
+    "macrocytosis": {
+      "logic": [
+        { "if_flag": { "mcv": "HIGH" }, "then": true },
+        { "else": false }
+      ],
+      "reason": "High MCV suggests macrocytosis."
+    },
+
+    "anisocytosis_or_mixed_anemia_hint": {
+      "logic": [
+        { "if_flag": { "rdw": "HIGH" }, "then": true },
+        { "else": false }
+      ],
+      "reason": "High RDW may indicate variable RBC sizes (iron deficiency or mixed anemia)."
+    },
+
+    "neutrophilia_pattern": {
+      "logic": [
+        { "if_flag": { "wbc": "HIGH", "neutrophils_percent": "HIGH" }, "then": true },
+        { "else": false }
+      ],
+      "reason": "High WBC with high neutrophils% supports a bacterial/inflammatory pattern."
+    },
+
+    "lymphocytosis_pattern": {
+      "logic": [
+        { "if_flag": { "wbc": "HIGH", "lymphocytes_percent": "HIGH" }, "then": true },
+        { "else": false }
+      ],
+      "reason": "High WBC with high lymphocytes% may support a viral/reactive pattern."
+    },
+
+    "leukopenia_pattern": {
+      "logic": [
+        { "if_flag": { "wbc": "LOW" }, "then": true },
+        { "else": false }
+      ],
+      "reason": "Low WBC may occur in viral illness, marrow suppression, or other causes."
+    },
+
+    "thrombocytopenia_present": {
+      "logic": [
+        { "if_flag": { "platelets": "LOW" }, "then": true },
+        { "else": false }
+      ],
+      "reason": "Low platelets define thrombocytopenia."
+    },
+
+    "thrombocytosis_present": {
+      "logic": [
+        { "if_flag": { "platelets": "HIGH" }, "then": true },
+        { "else": false }
+      ],
+      "reason": "High platelets can be reactive (inflammation/iron deficiency) or other causes."
+    }
+  },
+
+  "urgent_attention_rules": {
+    "use_numeric_thresholds_if_available": false,
+    "numeric_thresholds_placeholders": {
+      "hemoglobin_very_low": null,
+      "platelets_very_low": null,
+      "wbc_extreme_high": null,
+      "wbc_extreme_low": null
+    },
+    "flag_based_urgent_rules": [
+      {
+        "name": "severe_thrombocytopenia_flag",
+        "if": { "platelets": "LOW" },
+        "and_any": ["active_bleeding_symptoms_reported"],
+        "then": {
+          "urgent_flag": true,
+          "reason": "Low platelets with bleeding symptoms may require urgent evaluation."
+        }
+      }
+    ],
+    "default_urgent_output": {
+      "urgent_flag": false,
+      "reasons": [],
+      "suggested_action": "If severe symptoms exist (bleeding, chest pain, shortness of breath, fainting, persistent high fever), seek urgent medical care."
+    }
+  },
+
+  "pattern_support_rules": [
+    {
+      "condition": "Iron Deficiency Anemia",
+      "support_scoring": {
+        "support_indicators": [
+          { "indicator": "anemia_present", "weight": 3 },
+          { "indicator": "microcytosis", "weight": 2 },
+          { "indicator": "anisocytosis_or_mixed_anemia_hint", "weight": 2 },
+          { "feature_flag": { "platelets": "HIGH" }, "weight": 1 }
+        ],
+        "contradictions": [
+          { "indicator": "macrocytosis", "weight": -2 },
+          { "feature_flag": { "rdw": "NORMAL" }, "weight": -1 }
+        ],
+        "support_levels": [
+          { "min_score": 5, "level": "STRONG" },
+          { "min_score": 3, "level": "MODERATE" },
+          { "min_score": 1, "level": "WEAK" },
+          { "min_score": -999, "level": "NO_SUPPORT" }
+        ]
+      }
+    },
+    {
+      "condition": "Vitamin B12 / Folate Deficiency (Macrocytic Anemia)",
+      "support_scoring": {
+        "support_indicators": [
+          { "indicator": "anemia_present", "weight": 3 },
+          { "indicator": "macrocytosis", "weight": 3 }
+        ],
+        "contradictions": [
+          { "indicator": "microcytosis", "weight": -2 }
+        ],
+        "support_levels": [
+          { "min_score": 5, "level": "STRONG" },
+          { "min_score": 3, "level": "MODERATE" },
+          { "min_score": 1, "level": "WEAK" },
+          { "min_score": -999, "level": "NO_SUPPORT" }
+        ]
+      }
+    },
+    {
+      "condition": "Bacterial Infection / Acute Inflammation",
+      "support_scoring": {
+        "support_indicators": [
+          { "indicator": "neutrophilia_pattern", "weight": 3 },
+          { "feature_flag": { "wbc": "HIGH" }, "weight": 2 }
+        ],
+        "contradictions": [
+          { "indicator": "leukopenia_pattern", "weight": -1 }
+        ],
+        "support_levels": [
+          { "min_score": 4, "level": "STRONG" },
+          { "min_score": 2, "level": "MODERATE" },
+          { "min_score": 1, "level": "WEAK" },
+          { "min_score": -999, "level": "NO_SUPPORT" }
+        ]
+      }
+    },
+    {
+      "condition": "Viral / Reactive Pattern",
+      "support_scoring": {
+        "support_indicators": [
+          { "indicator": "lymphocytosis_pattern", "weight": 3 },
+          { "indicator": "leukopenia_pattern", "weight": 2 }
+        ],
+        "contradictions": [
+          { "indicator": "neutrophilia_pattern", "weight": -1 }
+        ],
+        "support_levels": [
+          { "min_score": 3, "level": "STRONG" },
+          { "min_score": 2, "level": "MODERATE" },
+          { "min_score": 1, "level": "WEAK" },
+          { "min_score": -999, "level": "NO_SUPPORT" }
+        ]
+      }
+    },
+    {
+      "condition": "Thrombocytopenia",
+      "support_scoring": {
+        "support_indicators": [
+          { "indicator": "thrombocytopenia_present", "weight": 4 }
+        ],
+        "contradictions": [],
+        "support_levels": [
+          { "min_score": 4, "level": "STRONG" },
+          { "min_score": 2, "level": "MODERATE" },
+          { "min_score": 1, "level": "WEAK" },
+          { "min_score": -999, "level": "NO_SUPPORT" }
+        ]
+      }
+    }
+  ],
+
+  "recommended_tests_by_indicator": [
+    {
+      "when_any_indicators_true": ["anemia_present", "microcytosis"],
+      "tests": [
+        { "test": "Serum Ferritin", "priority": 1, "reason": "Assesses iron stores to confirm iron deficiency." },
+        { "test": "Serum Iron + TIBC/Transferrin Saturation", "priority": 2, "reason": "Defines iron metabolism pattern." },
+        { "test": "Peripheral Blood Smear", "priority": 3, "reason": "Supports morphology (microcytosis/hypochromia)." }
+      ]
+    },
+    {
+      "when_any_indicators_true": ["anemia_present", "macrocytosis"],
+      "tests": [
+        { "test": "Vitamin B12 Level", "priority": 1, "reason": "Evaluates B12 deficiency." },
+        { "test": "Folate Level", "priority": 1, "reason": "Evaluates folate deficiency." },
+        { "test": "Peripheral Blood Smear", "priority": 3, "reason": "Looks for macro-ovalocytes/hypersegmented neutrophils." }
+      ]
+    },
+    {
+      "when_any_indicators_true": ["neutrophilia_pattern"],
+      "tests": [
+        { "test": "CRP", "priority": 1, "reason": "Inflammation marker." },
+        { "test": "Procalcitonin", "priority": 1, "reason": "Supports bacterial infection likelihood." },
+        { "test": "Culture tests (as clinically indicated)", "priority": 2, "reason": "Helps identify infection source when suspected." }
+      ]
+    },
+    {
+      "when_any_indicators_true": ["thrombocytopenia_present"],
+      "tests": [
+        { "test": "Repeat CBC", "priority": 1, "reason": "Confirms true thrombocytopenia and rules out lab error." },
+        { "test": "Peripheral Blood Smear", "priority": 1, "reason": "Rules out platelet clumping and abnormal cells." },
+        { "test": "PT/INR + aPTT", "priority": 2, "reason": "Screens coagulation abnormalities if clinically relevant." }
+      ]
+    }
+  ],
+
+  "global_disclaimer": "This analysis is intended for clinical decision support only and must be reviewed by a qualified healthcare professional."
+}
