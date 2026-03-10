@@ -465,6 +465,7 @@ app.add_middleware(
   "http://127.0.0.1:8081",
   "http://localhost:8082",
   "https://diagnoaii.netlify.app",
+  "https://diagnoaiii.netlify.app",
   "http://127.0.0.1:8082",
 ],
     allow_credentials=True,
