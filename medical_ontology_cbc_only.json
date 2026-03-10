@@ -1,0 +1,821 @@
+{
+  "version": "1.0",
+  "scope": "cbc_only",
+  "description": "CBC-only ontology for fallback scoring when Stage-1 marks a case as NOT CBC-related or Stage-2 confidence is low.",
+  "global_disclaimer": "Clinical decision support only. Not a diagnosis. Always correlate with symptoms, exam, and confirmatory tests.",
+  "scoring": {
+    "method": "weighted_rule_match",
+    "score_formula": "sum(weights of matched rules) / sum(weights of all rules)",
+    "default_min_score": 0.3,
+    "notes": [
+      "Only CBC-related conditions are included.",
+      "If a feature is not supplied, its rule remains unmatched.",
+      "Features may be inferred from values or optional cbc_flags."
+    ]
+  },
+  "cbc_related": {
+    "healthy": {
+      "display_name": "Healthy",
+      "min_score": 0.75,
+      "pattern_rules": [
+        {
+          "id": "hb_normal",
+          "feature": "hemoglobin",
+          "direction": "normal",
+          "weight": 0.2,
+          "reason": "Hemoglobin within normal range supports a healthy CBC pattern."
+        },
+        {
+          "id": "mcv_normal",
+          "feature": "mcv",
+          "direction": "normal",
+          "weight": 0.15,
+          "reason": "MCV within normal range supports normal red cell size."
+        },
+        {
+          "id": "mch_normal",
+          "feature": "mch",
+          "direction": "normal",
+          "weight": 0.1,
+          "reason": "MCH within normal range supports normal hemoglobin content per cell."
+        },
+        {
+          "id": "mchc_normal",
+          "feature": "mchc",
+          "direction": "normal",
+          "weight": 0.1,
+          "reason": "MCHC within normal range supports normal hemoglobin concentration."
+        },
+        {
+          "id": "wbc_normal",
+          "feature": "wbc",
+          "direction": "normal",
+          "weight": 0.15,
+          "reason": "WBC within normal range supports absence of major leukocyte abnormality."
+        },
+        {
+          "id": "rbc_normal",
+          "feature": "rbc",
+          "direction": "normal",
+          "weight": 0.1,
+          "reason": "RBC within normal range supports a healthy pattern."
+        },
+        {
+          "id": "hct_normal",
+          "feature": "hematocrit",
+          "direction": "normal",
+          "weight": 0.1,
+          "reason": "Hematocrit within normal range supports normal red cell volume fraction."
+        },
+        {
+          "id": "differential_normal",
+          "feature": "differential",
+          "direction": "normal",
+          "weight": 0.1,
+          "reason": "No major differential abnormality supports a healthy pattern."
+        }
+      ],
+      "likely_causes": [
+        "Physiologic/normal CBC pattern"
+      ],
+      "confirmatory_tests": [],
+      "suggested_specialty": {
+        "name": "Primary Care",
+        "reason": "No specific specialty referral if clinically well."
+      },
+      "red_flags": []
+    },
+    "iron_deficiency_anemia": {
+      "display_name": "Iron deficiency anemia",
+      "min_score": 0.4,
+      "pattern_rules": [
+        {
+          "id": "hb_low",
+          "feature": "hemoglobin",
+          "direction": "low",
+          "weight": 0.25,
+          "reason": "Low hemoglobin supports anemia."
+        },
+        {
+          "id": "mcv_low",
+          "feature": "mcv",
+          "direction": "low",
+          "weight": 0.25,
+          "reason": "Low MCV supports microcytosis."
+        },
+        {
+          "id": "mch_low",
+          "feature": "mch",
+          "direction": "low",
+          "weight": 0.2,
+          "reason": "Low MCH supports hypochromia."
+        },
+        {
+          "id": "mchc_low_or_normal",
+          "feature": "mchc",
+          "direction": "low_or_normal",
+          "weight": 0.1,
+          "reason": "MCHC may be low or near-normal in iron deficiency."
+        },
+        {
+          "id": "rbc_low_or_normal",
+          "feature": "rbc",
+          "direction": "low_or_normal",
+          "weight": 0.1,
+          "reason": "RBC count is often low or normal."
+        },
+        {
+          "id": "hct_low",
+          "feature": "hematocrit",
+          "direction": "low",
+          "weight": 0.1,
+          "reason": "Low hematocrit supports anemia severity."
+        }
+      ],
+      "likely_causes": [
+        "Chronic blood loss",
+        "Poor dietary iron intake",
+        "Malabsorption",
+        "Increased iron demand"
+      ],
+      "confirmatory_tests": [
+        {
+          "test": "Ferritin",
+          "priority": 1,
+          "reason": "Best initial test for iron stores."
+        },
+        {
+          "test": "Serum iron",
+          "priority": 2,
+          "reason": "Supports iron deficiency workup."
+        },
+        {
+          "test": "TIBC",
+          "priority": 2,
+          "reason": "Helps interpret iron status."
+        },
+        {
+          "test": "Transferrin saturation",
+          "priority": 2,
+          "reason": "Refines iron deficiency assessment."
+        },
+        {
+          "test": "Peripheral smear",
+          "priority": 3,
+          "reason": "Looks for microcytosis/hypochromia."
+        }
+      ],
+      "suggested_specialty": {
+        "name": "Hematology",
+        "reason": "For persistent, severe, or unclear anemia."
+      },
+      "red_flags": [
+        "Very low hemoglobin",
+        "Syncope, dyspnea, chest pain",
+        "Possible active bleeding"
+      ]
+    },
+    "other_microcytic_anemia": {
+      "display_name": "Other microcytic anemia",
+      "min_score": 0.4,
+      "pattern_rules": [
+        {
+          "id": "hb_low",
+          "feature": "hemoglobin",
+          "direction": "low",
+          "weight": 0.25,
+          "reason": "Low hemoglobin supports anemia."
+        },
+        {
+          "id": "mcv_low",
+          "feature": "mcv",
+          "direction": "low",
+          "weight": 0.3,
+          "reason": "Low MCV supports microcytic pattern."
+        },
+        {
+          "id": "mch_low",
+          "feature": "mch",
+          "direction": "low",
+          "weight": 0.2,
+          "reason": "Low MCH supports microcytic/hypochromic pattern."
+        },
+        {
+          "id": "mchc_low_or_normal",
+          "feature": "mchc",
+          "direction": "low_or_normal",
+          "weight": 0.1,
+          "reason": "MCHC can be low or normal."
+        },
+        {
+          "id": "rbc_normal_or_high",
+          "feature": "rbc",
+          "direction": "high_or_normal",
+          "weight": 0.05,
+          "reason": "Some microcytic disorders may keep RBC count normal/high."
+        },
+        {
+          "id": "hct_low",
+          "feature": "hematocrit",
+          "direction": "low",
+          "weight": 0.1,
+          "reason": "Low hematocrit supports anemia."
+        }
+      ],
+      "likely_causes": [
+        "Thalassemia trait",
+        "Anemia of chronic disease (occasionally microcytic)",
+        "Sideroblastic anemia"
+      ],
+      "confirmatory_tests": [
+        {
+          "test": "Ferritin",
+          "priority": 1,
+          "reason": "Distinguishes iron deficiency from other microcytic causes."
+        },
+        {
+          "test": "Hemoglobin electrophoresis",
+          "priority": 1,
+          "reason": "Useful if thalassemia is suspected."
+        },
+        {
+          "test": "Peripheral smear",
+          "priority": 2,
+          "reason": "Morphology assessment."
+        },
+        {
+          "test": "Reticulocyte count",
+          "priority": 3,
+          "reason": "Bone marrow response."
+        }
+      ],
+      "suggested_specialty": {
+        "name": "Hematology",
+        "reason": "For anemia subtype clarification."
+      },
+      "red_flags": [
+        "Progressive anemia",
+        "Family history suggesting inherited anemia"
+      ]
+    },
+    "normocytic_hypochromic_anemia": {
+      "display_name": "Normocytic hypochromic anemia",
+      "min_score": 0.4,
+      "pattern_rules": [
+        {
+          "id": "hb_low",
+          "feature": "hemoglobin",
+          "direction": "low",
+          "weight": 0.3,
+          "reason": "Low hemoglobin supports anemia."
+        },
+        {
+          "id": "mcv_normal",
+          "feature": "mcv",
+          "direction": "normal",
+          "weight": 0.2,
+          "reason": "Normal MCV supports normocytic pattern."
+        },
+        {
+          "id": "mch_low",
+          "feature": "mch",
+          "direction": "low",
+          "weight": 0.2,
+          "reason": "Low MCH supports hypochromia."
+        },
+        {
+          "id": "mchc_low_or_normal",
+          "feature": "mchc",
+          "direction": "low_or_normal",
+          "weight": 0.1,
+          "reason": "MCHC may be low or low-normal."
+        },
+        {
+          "id": "hct_low",
+          "feature": "hematocrit",
+          "direction": "low",
+          "weight": 0.1,
+          "reason": "Low hematocrit supports anemia."
+        },
+        {
+          "id": "rbc_low_or_normal",
+          "feature": "rbc",
+          "direction": "low_or_normal",
+          "weight": 0.1,
+          "reason": "RBC count may be low or normal."
+        }
+      ],
+      "likely_causes": [
+        "Early iron deficiency",
+        "Mixed anemia",
+        "Chronic disease pattern"
+      ],
+      "confirmatory_tests": [
+        {
+          "test": "Ferritin",
+          "priority": 1,
+          "reason": "Assesses iron status."
+        },
+        {
+          "test": "CRP / ESR",
+          "priority": 2,
+          "reason": "Looks for chronic inflammatory state."
+        },
+        {
+          "test": "Peripheral smear",
+          "priority": 2,
+          "reason": "Morphology review."
+        },
+        {
+          "test": "Reticulocyte count",
+          "priority": 3,
+          "reason": "Evaluates marrow response."
+        }
+      ],
+      "suggested_specialty": {
+        "name": "Hematology",
+        "reason": "Useful when anemia pattern is mixed or unclear."
+      },
+      "red_flags": [
+        "Rapid hemoglobin drop",
+        "Symptoms out of proportion to mild CBC abnormality"
+      ]
+    },
+    "normocytic_normochromic_anemia": {
+      "display_name": "Normocytic normochromic anemia",
+      "min_score": 0.4,
+      "pattern_rules": [
+        {
+          "id": "hb_low",
+          "feature": "hemoglobin",
+          "direction": "low",
+          "weight": 0.3,
+          "reason": "Low hemoglobin supports anemia."
+        },
+        {
+          "id": "mcv_normal",
+          "feature": "mcv",
+          "direction": "normal",
+          "weight": 0.2,
+          "reason": "Normal MCV supports normocytic pattern."
+        },
+        {
+          "id": "mch_normal",
+          "feature": "mch",
+          "direction": "normal",
+          "weight": 0.15,
+          "reason": "Normal MCH supports normochromic pattern."
+        },
+        {
+          "id": "mchc_normal",
+          "feature": "mchc",
+          "direction": "normal",
+          "weight": 0.1,
+          "reason": "Normal MCHC supports normochromia."
+        },
+        {
+          "id": "hct_low",
+          "feature": "hematocrit",
+          "direction": "low",
+          "weight": 0.15,
+          "reason": "Low hematocrit supports anemia."
+        },
+        {
+          "id": "rbc_low_or_normal",
+          "feature": "rbc",
+          "direction": "low_or_normal",
+          "weight": 0.1,
+          "reason": "RBC count may be low or normal."
+        }
+      ],
+      "likely_causes": [
+        "Acute blood loss",
+        "Anemia of chronic disease",
+        "Renal disease",
+        "Bone marrow suppression"
+      ],
+      "confirmatory_tests": [
+        {
+          "test": "Reticulocyte count",
+          "priority": 1,
+          "reason": "Helps separate production failure from blood loss/hemolysis."
+        },
+        {
+          "test": "Creatinine / renal function",
+          "priority": 2,
+          "reason": "Renal disease can cause normocytic anemia."
+        },
+        {
+          "test": "CRP / ESR",
+          "priority": 2,
+          "reason": "Looks for chronic inflammation."
+        },
+        {
+          "test": "Peripheral smear",
+          "priority": 2,
+          "reason": "Morphology assessment."
+        }
+      ],
+      "suggested_specialty": {
+        "name": "Internal Medicine / Hematology",
+        "reason": "Depends on severity and suspected cause."
+      },
+      "red_flags": [
+        "Severe fatigue",
+        "Acute bleeding history",
+        "Very low hemoglobin"
+      ]
+    },
+    "macrocytic_anemia": {
+      "display_name": "Macrocytic anemia",
+      "min_score": 0.4,
+      "pattern_rules": [
+        {
+          "id": "hb_low",
+          "feature": "hemoglobin",
+          "direction": "low",
+          "weight": 0.25,
+          "reason": "Low hemoglobin supports anemia."
+        },
+        {
+          "id": "mcv_high",
+          "feature": "mcv",
+          "direction": "high",
+          "weight": 0.3,
+          "reason": "High MCV supports macrocytosis."
+        },
+        {
+          "id": "mch_high_or_normal",
+          "feature": "mch",
+          "direction": "high_or_normal",
+          "weight": 0.1,
+          "reason": "MCH may increase with larger cells."
+        },
+        {
+          "id": "hct_low",
+          "feature": "hematocrit",
+          "direction": "low",
+          "weight": 0.15,
+          "reason": "Low hematocrit supports anemia."
+        },
+        {
+          "id": "rbc_low_or_normal",
+          "feature": "rbc",
+          "direction": "low_or_normal",
+          "weight": 0.1,
+          "reason": "RBC count may be low or normal."
+        },
+        {
+          "id": "wbc_normal_or_low",
+          "feature": "wbc",
+          "direction": "low_or_normal",
+          "weight": 0.1,
+          "reason": "Some marrow disorders may also lower WBC."
+        }
+      ],
+      "likely_causes": [
+        "Vitamin B12 deficiency",
+        "Folate deficiency",
+        "Liver disease",
+        "Alcohol use",
+        "Hypothyroidism",
+        "Myelodysplasia"
+      ],
+      "confirmatory_tests": [
+        {
+          "test": "Vitamin B12",
+          "priority": 1,
+          "reason": "Checks for B12 deficiency."
+        },
+        {
+          "test": "Folate",
+          "priority": 1,
+          "reason": "Checks for folate deficiency."
+        },
+        {
+          "test": "Peripheral smear",
+          "priority": 2,
+          "reason": "Looks for macro-ovalocytes / hypersegmented neutrophils."
+        },
+        {
+          "test": "Liver function tests",
+          "priority": 2,
+          "reason": "Liver disease can cause macrocytosis."
+        },
+        {
+          "test": "TSH",
+          "priority": 3,
+          "reason": "Hypothyroidism can contribute."
+        }
+      ],
+      "suggested_specialty": {
+        "name": "Hematology / Internal Medicine",
+        "reason": "For deficiency workup and marrow evaluation if needed."
+      },
+      "red_flags": [
+        "Neurologic symptoms suggesting B12 deficiency",
+        "Pancytopenia",
+        "Marked macrocytosis"
+      ]
+    },
+    "anemia_nos": {
+      "display_name": "Anemia NOS",
+      "min_score": 0.3,
+      "pattern_rules": [
+        {
+          "id": "hb_low",
+          "feature": "hemoglobin",
+          "direction": "low",
+          "weight": 0.4,
+          "reason": "Low hemoglobin broadly supports anemia."
+        },
+        {
+          "id": "hct_low",
+          "feature": "hematocrit",
+          "direction": "low",
+          "weight": 0.25,
+          "reason": "Low hematocrit broadly supports anemia."
+        },
+        {
+          "id": "rbc_low_or_normal",
+          "feature": "rbc",
+          "direction": "low_or_normal",
+          "weight": 0.15,
+          "reason": "RBC may be low or near-normal."
+        },
+        {
+          "id": "cbc_scope_insufficient",
+          "feature": "cbc_scope",
+          "direction": "insufficient",
+          "weight": 0.2,
+          "reason": "Used when CBC suggests anemia but is insufficient for subtype confidence."
+        }
+      ],
+      "likely_causes": [
+        "Unspecified anemia pattern",
+        "Insufficient subtype information",
+        "Mixed anemia"
+      ],
+      "confirmatory_tests": [
+        {
+          "test": "Reticulocyte count",
+          "priority": 1,
+          "reason": "Starting point for anemia workup."
+        },
+        {
+          "test": "Peripheral smear",
+          "priority": 1,
+          "reason": "Morphology helps subtype anemia."
+        },
+        {
+          "test": "Ferritin",
+          "priority": 2,
+          "reason": "Common next step."
+        },
+        {
+          "test": "Vitamin B12 / Folate",
+          "priority": 2,
+          "reason": "Evaluates macrocytic causes."
+        }
+      ],
+      "suggested_specialty": {
+        "name": "Hematology / Internal Medicine",
+        "reason": "If anemia is persistent or severe."
+      },
+      "red_flags": [
+        "Very low hemoglobin",
+        "Symptomatic anemia",
+        "Unclear etiology despite abnormal CBC"
+      ]
+    },
+    "thrombocytopenia": {
+      "display_name": "Thrombocytopenia",
+      "min_score": 0.35,
+      "pattern_rules": [
+        {
+          "id": "platelets_low",
+          "feature": "platelets",
+          "direction": "low",
+          "weight": 0.6,
+          "reason": "Low platelet count is the core feature of thrombocytopenia."
+        },
+        {
+          "id": "wbc_normal_or_abnormal",
+          "feature": "wbc",
+          "direction": "high_or_low",
+          "weight": 0.1,
+          "reason": "WBC may be abnormal in secondary causes."
+        },
+        {
+          "id": "hb_low_or_normal",
+          "feature": "hemoglobin",
+          "direction": "low_or_normal",
+          "weight": 0.1,
+          "reason": "Hemoglobin may be normal or reduced if bleeding/coexisting anemia exists."
+        },
+        {
+          "id": "cbc_scope_support",
+          "feature": "cbc_scope",
+          "direction": "support_only",
+          "weight": 0.2,
+          "reason": "Allows fallback support even if platelet-only picture dominates."
+        }
+      ],
+      "likely_causes": [
+        "Immune thrombocytopenia",
+        "Viral infection",
+        "Bone marrow disorder",
+        "Drug effect",
+        "Hypersplenism"
+      ],
+      "confirmatory_tests": [
+        {
+          "test": "Repeat CBC with platelet count",
+          "priority": 1,
+          "reason": "Rule out lab artifact and confirm thrombocytopenia."
+        },
+        {
+          "test": "Peripheral smear",
+          "priority": 1,
+          "reason": "Looks for clumping or blasts."
+        },
+        {
+          "test": "Liver function tests",
+          "priority": 2,
+          "reason": "Screens for liver/splenic causes."
+        },
+        {
+          "test": "Coagulation profile",
+          "priority": 2,
+          "reason": "Needed if bleeding concern exists."
+        }
+      ],
+      "suggested_specialty": {
+        "name": "Hematology",
+        "reason": "If platelet count is significantly reduced or bleeding is present."
+      },
+      "red_flags": [
+        "Active bleeding",
+        "Petechiae/purpura",
+        "Very low platelet count"
+      ]
+    },
+    "leukemia": {
+      "display_name": "Leukemia",
+      "min_score": 0.35,
+      "pattern_rules": [
+        {
+          "id": "wbc_extreme",
+          "feature": "wbc",
+          "direction": "very_high_or_very_low",
+          "weight": 0.35,
+          "reason": "Marked leukocyte abnormality raises concern for leukemia."
+        },
+        {
+          "id": "hb_low",
+          "feature": "hemoglobin",
+          "direction": "low",
+          "weight": 0.2,
+          "reason": "Anemia often accompanies marrow disease."
+        },
+        {
+          "id": "rbc_low",
+          "feature": "rbc",
+          "direction": "low",
+          "weight": 0.1,
+          "reason": "Low RBC count supports marrow involvement."
+        },
+        {
+          "id": "hct_low",
+          "feature": "hematocrit",
+          "direction": "low",
+          "weight": 0.1,
+          "reason": "Low hematocrit supports anemia."
+        },
+        {
+          "id": "differential_abnormal",
+          "feature": "differential",
+          "direction": "abnormal",
+          "weight": 0.15,
+          "reason": "Abnormal differential may reflect immature or skewed leukocyte populations."
+        },
+        {
+          "id": "cbc_scope_support",
+          "feature": "cbc_scope",
+          "direction": "support_only",
+          "weight": 0.1,
+          "reason": "Allows leukemia concern to surface in fallback scoring."
+        }
+      ],
+      "likely_causes": [
+        "Bone marrow malignancy"
+      ],
+      "confirmatory_tests": [
+        {
+          "test": "Peripheral smear",
+          "priority": 1,
+          "reason": "May reveal blasts or abnormal cells."
+        },
+        {
+          "test": "Flow cytometry",
+          "priority": 1,
+          "reason": "Classifies hematologic malignancy."
+        },
+        {
+          "test": "Bone marrow biopsy",
+          "priority": 1,
+          "reason": "Definitive evaluation if clinically indicated."
+        },
+        {
+          "test": "LDH / uric acid",
+          "priority": 2,
+          "reason": "Supportive tumor burden markers."
+        }
+      ],
+      "suggested_specialty": {
+        "name": "Hematology / Oncology",
+        "reason": "Urgent evaluation may be required."
+      },
+      "red_flags": [
+        "Extremely high or very low WBC",
+        "Blast suspicion on smear",
+        "Bleeding/infection with cytopenias"
+      ]
+    },
+    "leukemia_with_thrombocytopenia": {
+      "display_name": "Leukemia with thrombocytopenia",
+      "min_score": 0.4,
+      "pattern_rules": [
+        {
+          "id": "wbc_extreme",
+          "feature": "wbc",
+          "direction": "very_high_or_very_low",
+          "weight": 0.3,
+          "reason": "Marked leukocyte abnormality raises concern for leukemia."
+        },
+        {
+          "id": "platelets_low",
+          "feature": "platelets",
+          "direction": "low",
+          "weight": 0.3,
+          "reason": "Low platelets suggest marrow infiltration or consumption."
+        },
+        {
+          "id": "hb_low",
+          "feature": "hemoglobin",
+          "direction": "low",
+          "weight": 0.15,
+          "reason": "Anemia often coexists in marrow disease."
+        },
+        {
+          "id": "hct_low",
+          "feature": "hematocrit",
+          "direction": "low",
+          "weight": 0.1,
+          "reason": "Low hematocrit supports cytopenia."
+        },
+        {
+          "id": "differential_abnormal",
+          "feature": "differential",
+          "direction": "abnormal",
+          "weight": 0.15,
+          "reason": "Differential abnormalities strengthen marrow pathology suspicion."
+        }
+      ],
+      "likely_causes": [
+        "Bone marrow malignancy with platelet suppression/infiltration"
+      ],
+      "confirmatory_tests": [
+        {
+          "test": "Peripheral smear",
+          "priority": 1,
+          "reason": "Urgent review for blasts."
+        },
+        {
+          "test": "Flow cytometry",
+          "priority": 1,
+          "reason": "Characterizes hematologic malignancy."
+        },
+        {
+          "test": "Bone marrow biopsy",
+          "priority": 1,
+          "reason": "Definitive confirmation."
+        },
+        {
+          "test": "Coagulation profile",
+          "priority": 2,
+          "reason": "Needed if bleeding or DIC concern exists."
+        }
+      ],
+      "suggested_specialty": {
+        "name": "Hematology / Oncology",
+        "reason": "Urgent referral is often appropriate."
+      },
+      "red_flags": [
+        "Bleeding with cytopenias",
+        "Suspected blasts",
+        "Extremely abnormal WBC"
+      ]
+    }
+  }
+}
