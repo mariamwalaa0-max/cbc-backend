@@ -421,12 +421,14 @@ async def lifespan(app: FastAPI):
 
         ARTIFACTS["feature_columns"] = joblib.load(FEATURE_COLUMNS_PATH)
         ARTIFACTS["feature_medians"] = joblib.load(FEATURE_MEDIANS_PATH)
-
+         
         with open(MEDICAL_ONTOLOGY_PATH, "r", encoding="utf-8") as f:
             ARTIFACTS["medical_ontology"] = json.load(f)
 
         # Load stage1 threshold if available
-        ARTIFACTS["stage1_threshold"] = 0.6  # Default, override if stored
+        with open("cbc_model_metadata.json") as f:
+          metadata = json.load(f)
+          ARTIFACTS["stage1_threshold"] = metadata.get("stage1_threshold", 0.6) # Default, override if stored
 
         # Optional sanity check
         cols = list(ARTIFACTS["feature_columns"])

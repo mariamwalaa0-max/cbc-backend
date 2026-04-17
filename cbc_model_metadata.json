@@ -1,0 +1,25 @@
+{
+    "best_stage1_model_name": "Logistic Regression",
+    "best_stage2_model_name": "XGBoost",
+    "feature_columns": [
+        "wbc",
+        "rbc",
+        "hemoglobin",
+        "hematocrit",
+        "mcv",
+        "mch",
+        "mchc",
+        "lymp_abs",
+        "neut_abs"
+    ],
+    "stage2_classes": [
+        "anemia",
+        "healthy",
+        "infection",
+        "iron_deficiency_anemia",
+        "leukemia_risk",
+        "microcytic_anemia",
+        "normocytic_anemia",
+        "thrombocytopenia"
+    ]
+}
